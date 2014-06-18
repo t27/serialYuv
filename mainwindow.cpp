@@ -21,38 +21,50 @@ void MainWindow::on_pushButton_clicked()
      *
      * where nn is a number in hexa decimal form
      * */
-    QString file1Name = QFileDialog::getOpenFileName(this,tr("Open Data File"),"C:\\ ", tr("txt Files (*.txt)"));
+    file1Name = QFileDialog::getOpenFileName(this,tr("Open Data File"),"C:\\ ", tr("txt Files (*.txt)"));
     ui->lineEdit->setText(file1Name);
-    QFile *file1=new QFile(file1Name);
-    file1->open(QIODevice::ReadOnly | QIODevice::Text);//*
-    data=QString(file1->readAll());//*
+
+//    data=QString(file1->readAll());//*
     //data.append(file1->read)
-    ui->plainTextEdit->setPlainText(data);//*
+//    ui->plainTextEdit->setPlainText(data);//*
     //ui->plainTextEdit->setText(data);
 }
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    data=ui->plainTextEdit->toPlainText();
-    QStringList lst=data.split(",");
-    QByteArray yuvarr;
-//    ui->plainTextEdit->clear();
-    //int i=0;
-    foreach(QString s,lst){
-        yuvarr.append(s.toInt(0,16));
-//        ui->plainTextEdit->append(QString(yuvarr.data()[i]));
-//        i++;
-    }
-    //YUV422_to_RGB888(yuvarr);
-    QFile *file2=new QFile(ui->lineEdit_2->text());
-    file2->open(QIODevice::WriteOnly);
-    QDataStream out(file2);
-    out.setByteOrder(QDataStream::LittleEndian); // *** set little endian byte order
-    foreach(quint8 dat,yuvarr){
-    out<<dat;
+    QFile *file1=new QFile(file1Name);
+    file1->open(QIODevice::ReadOnly | QIODevice::Text);//*
+//    data=ui->plainTextEdit->toPlainText();
+    QString str,data;
+
+    while(!file1->atEnd()){
+        str=file1->readLine();
+        while(!str.contains("NewFrame")){
+            str=file1->readLine();
+        }
+        //here, str contains NewFrame hence next line has data
+        qDebug()<<"Found NewFrame";
+        data=file1->readLine();
+        QStringList lst=data.split(",");
+        QByteArray yuvarr;
+        foreach(QString s,lst){
+            yuvarr.append(s.toInt(0,16));
+        }
+        //yuvarr now has the binary YUV422 UYVY data
+        //Now display it or store it
+
+        //YUV422_to_RGB888(yuvarr);
+        QFile *file2=new QFile(ui->lineEdit_2->text());
+        file2->open(QIODevice::WriteOnly);
+        QDataStream out(file2);
+        out.setByteOrder(QDataStream::LittleEndian); // *** set little endian byte order
+        foreach(quint8 dat,yuvarr){
+            out<<dat;
+        }
+        file2->close();
     }
 
-    file2->close();
+    file1->close();
 
 }
 

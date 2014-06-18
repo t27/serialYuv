@@ -30,7 +30,8 @@ private slots:
 private:
     void YUV422_to_RGB888(QByteArray rawStreamingFrame);
     Ui::MainWindow *ui;
-    QString data;
+//    QString data;
+    QString file1Name;
 };
 
 #endif // MAINWINDOW_H
