@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDebug>
+#define INTERLEAVED
 namespace Ui {
 class MainWindow;
 }
@@ -29,6 +30,7 @@ private slots:
 
 private:
     void YUV422_to_RGB888(QByteArray rawStreamingFrame);
+    void YUVtoRGB(QByteArray yuvData);
     Ui::MainWindow *ui;
 //    QString data;
     QString file1Name;
