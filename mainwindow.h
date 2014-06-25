@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDebug>
+#include <stdlib.h>
+#include <unistd.h>
 #define INTERLEAVED
 namespace Ui {
 class MainWindow;
@@ -34,6 +36,7 @@ private:
     Ui::MainWindow *ui;
 //    QString data;
     QString file1Name;
+
 };
 
 #endif // MAINWINDOW_H
